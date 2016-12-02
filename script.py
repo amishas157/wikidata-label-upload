@@ -27,7 +27,7 @@ edit_token = r3.json()['query']['tokens']['csrftoken']
 edit_cookie = r2.cookies.copy()
 edit_cookie.update(r3.cookies)
 
-fr = open('sample.json','r')
+fr = open('input.json','r')
 fw = open('pushlogs.json','w')
 
 for line in fr:
