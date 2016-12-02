@@ -1,5 +1,7 @@
 # wikidataLabelUpload
 
+Upload a CSV of translated labels into Wikidata
+
 ### Usage
 python script.py username password columnName languageCode
 
