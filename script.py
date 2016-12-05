@@ -29,14 +29,14 @@ for line in fr:
                     else:
                         aliases.update({wikiLanguageCode :[l[columnName]]})
                         l['logs'] = "Set alias"
-                    item.editAliases(aliases=aliases, summary=u'Set aliases')
+                    item.editAliases(aliases=aliases)
                     fw.write(json.dumps(l) + '\n')
                 else: 
                     l['logs'] = "Duplicate label"
                     fw.write(json.dumps(l) + '\n')
 
             else:
-                item.editLabels(labels={wikiLanguageCode: l[columnName]}, summary=u'Edit label')
+                item.editLabels(labels={wikiLanguageCode: l[columnName]})
                 l['logs'] = "Pushed label"
                 fw.write(json.dumps(l) + '\n')
         except KeyError, e:
