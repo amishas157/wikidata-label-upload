@@ -15,12 +15,13 @@ fw = open('pushlogs.json','w')
 for line in fr:
     l = json.loads(line)
     language = columnName.split('.')[1]
-    if columnName in l and 'id' in l:
+    if columnName in l and 'id' in l and l[columnName]!='':
         item = pywikibot.ItemPage(repo, l['id'])
         item.get()
         try:
             if wikiLanguageCode in item.labels:
                 label = item.labels[wikiLanguageCode]
+                print "Existing label:" + label
                 if label != l[columnName]:
                     aliases = item.aliases
                     if wikiLanguageCode in aliases:
@@ -31,7 +32,7 @@ for line in fr:
                         l['logs'] = "Set alias"
                     item.editAliases(aliases=aliases)
                     fw.write(json.dumps(l) + '\n')
-                else: 
+                else:
                     l['logs'] = "Duplicate label"
                     fw.write(json.dumps(l) + '\n')
 
@@ -43,6 +44,5 @@ for line in fr:
             l['logs'] = "Exception"
             fw.write(json.dumps(l) + '\n')
     else:
-        l['logs'] = "No wikidata id"
+        l['logs'] = "No wikidata id or label"
         fw.write(json.dumps(l) + '\n')
-
