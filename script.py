@@ -9,7 +9,7 @@ wikiLanguageCode = sys.argv[2]
 site = pywikibot.Site(wikiLanguageCode, 'wikipedia')
 repo = site.data_repository()
 
-fr = open('input.json','r')
+fr = open('sample.json','r')
 fw = open('pushlogs.json','w')
 
 for line in fr:
