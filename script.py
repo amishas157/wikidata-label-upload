@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pywikibot
-import requests, csv, json
+import json
 import sys
 
 columnName = sys.argv[1]
