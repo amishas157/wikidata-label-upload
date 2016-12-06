@@ -24,11 +24,14 @@ for line in fr:
                 if label != l[columnName]:
                     aliases = item.aliases
                     if wikiLanguageCode in aliases:
-                        aliases[wikiLanguageCode].append(l[columnName])
-                        l['logs'] = "Appending an alias"
+                        if l[columnName] in aliases[wikiLanguageCode]:
+                            l['logs'] = "Skipped duplicate alias"
+                        else:
+                            aliases[wikiLanguageCode].append(l[columnName])
+                            l['logs'] = "Appending an alias"
                     else:
                         aliases.update({wikiLanguageCode :[l[columnName]]})
-                        l['logs'] = "Creating new alias"
+                        l['logs'] = "Appending an alias"
                     item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + l[columnName])
                     fw.write(json.dumps(l) + '\n')
                 else:
