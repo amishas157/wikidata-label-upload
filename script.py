@@ -21,7 +21,6 @@ for line in fr:
         try:
             if wikiLanguageCode in item.labels:
                 label = item.labels[wikiLanguageCode]
-                print "Existing label:" + label
                 if label != l[columnName]:
                     aliases = item.aliases
                     if wikiLanguageCode in aliases:
@@ -30,14 +29,14 @@ for line in fr:
                     else:
                         aliases.update({wikiLanguageCode :[l[columnName]]})
                         l['logs'] = "Set alias"
-                    item.editAliases(aliases=aliases)
+                    item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + l[columnName])
                     fw.write(json.dumps(l) + '\n')
                 else:
                     l['logs'] = "Duplicate label"
                     fw.write(json.dumps(l) + '\n')
 
             else:
-                item.editLabels(labels={wikiLanguageCode: l[columnName]})
+                item.editLabels(labels={wikiLanguageCode: l[columnName]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[columnName])
                 l['logs'] = "Pushed label"
                 fw.write(json.dumps(l) + '\n')
         except KeyError, e:
