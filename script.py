@@ -16,9 +16,9 @@ for line in fr:
     l = json.loads(line)
     language = columnName.split('.')[1]
     if columnName in l and 'id' in l and l[columnName]!='':
-        item = pywikibot.ItemPage(repo, l['id'])
-        item.get()
         try:
+            item = pywikibot.ItemPage(repo, l['id'])
+            item.get()
             if wikiLanguageCode in item.labels:
                 label = item.labels[wikiLanguageCode]
                 if label != l[columnName]:
@@ -39,7 +39,7 @@ for line in fr:
                 item.editLabels(labels={wikiLanguageCode: l[columnName]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[columnName])
                 l['logs'] = "Pushed label"
                 fw.write(json.dumps(l) + '\n')
-        except KeyError, e:
+        except:
             l['logs'] = "Exception"
             fw.write(json.dumps(l) + '\n')
     else:
