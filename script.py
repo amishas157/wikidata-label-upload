@@ -12,7 +12,11 @@ repo = site.data_repository()
 fr = open('sample.json','r')
 fw = open('pushlogs.json','w')
 
+total = 0
+upload = 0
+
 for line in fr:
+    total = total + 1
     l = json.loads(line)
     language = columnName.split('.')[1]
     if columnName in l and 'id' in l and l[columnName]!='':
@@ -28,9 +32,11 @@ for line in fr:
                             l['logs'] = "Skipped duplicate alias"
                         else:
                             aliases[wikiLanguageCode].append(l[columnName])
+                            upload = upload + 1
                             l['logs'] = "Appending an alias"
                     else:
                         aliases.update({wikiLanguageCode :[l[columnName]]})
+                        upload = upload + 1
                         l['logs'] = "Appending an alias"
                     item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + l[columnName])
                     fw.write(json.dumps(l) + '\n')
@@ -40,6 +46,7 @@ for line in fr:
 
             else:
                 item.editLabels(labels={wikiLanguageCode: l[columnName]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[columnName])
+                upload = upload + 1
                 l['logs'] = "Added new label"
                 fw.write(json.dumps(l) + '\n')
         except:
@@ -49,3 +56,5 @@ for line in fr:
         l['logs'] = "No wikidata id or label"
         fw.write(json.dumps(l) + '\n')
     print l['logs']
+
+print upload , ' of ' , total , ' uploaded. Hooray'
