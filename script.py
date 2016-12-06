@@ -45,3 +45,4 @@ for line in fr:
     else:
         l['logs'] = "No wikidata id or label"
         fw.write(json.dumps(l) + '\n')
+    print l['logs']
