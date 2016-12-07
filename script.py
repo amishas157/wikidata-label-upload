@@ -49,8 +49,9 @@ for line in fr:
                 upload = upload + 1
                 l['logs'] = "Added new label"
                 fw.write(json.dumps(l) + '\n')
-        except:
-            l['logs'] = "Exception"
+        except Exception as e:
+            excepName = type(e).__name__
+            l['logs'] = "Exception" + excepName
             fw.write(json.dumps(l) + '\n')
     else:
         l['logs'] = "No wikidata id or label"
