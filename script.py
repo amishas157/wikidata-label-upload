@@ -50,9 +50,9 @@ for line in fr:
                 l['logs'] = "Added new label"
                 fw.write(json.dumps(l) + '\n')
         except Exception as e:
-            excepName = type(e).__name__
-            l['logs'] = "Exception" + excepName
-            fw.write(json.dumps(l) + '\n')
+                excepName = type(e).__name__
+                l['logs'] = "Exception" + excepName
+                fw.write(json.dumps(l) + '\n')
     else:
         l['logs'] = "No wikidata id or label"
         fw.write(json.dumps(l) + '\n')
