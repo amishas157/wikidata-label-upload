@@ -3,20 +3,24 @@ import pywikibot
 import json
 import sys
 
-columnName = sys.argv[1]
-wikiLanguageCode = sys.argv[2]
+inputJSON = sys.argv[1]
+columnName = sys.argv[2]
+wikiLanguageCode = sys.argv[3]
+
 
 site = pywikibot.Site(wikiLanguageCode, 'wikipedia')
 repo = site.data_repository()
 
-fr = open('sample.json','r')
-fw = open('pushlogs.json','w')
+fr = open(inputJSON,'r')
+fw = open('logs.json','w')
 
 total = 0
 upload = 0
+skipped = 0
+failed = 0
 
 for line in fr:
-    total = total + 1
+    total += 1
     l = json.loads(line)
     language = columnName.split('.')[1]
     if columnName in l and 'id' in l and l[columnName]!='':
@@ -30,13 +34,14 @@ for line in fr:
                     if wikiLanguageCode in aliases:
                         if l[columnName] in aliases[wikiLanguageCode]:
                             l['logs'] = "Skipped duplicate alias"
+                            skipped += 1
                         else:
                             aliases[wikiLanguageCode].append(l[columnName])
-                            upload = upload + 1
+                            upload += 1
                             l['logs'] = "Appending an alias"
                     else:
                         aliases.update({wikiLanguageCode :[l[columnName]]})
-                        upload = upload + 1
+                        upload += 1
                         l['logs'] = "Appending an alias"
                     item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + l[columnName])
                     fw.write(json.dumps(l) + '\n')
@@ -46,16 +51,18 @@ for line in fr:
 
             else:
                 item.editLabels(labels={wikiLanguageCode: l[columnName]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[columnName])
-                upload = upload + 1
+                upload += 1
                 l['logs'] = "Added new label"
                 fw.write(json.dumps(l) + '\n')
         except Exception as e:
                 excepName = type(e).__name__
                 l['logs'] = "Exception" + excepName
                 fw.write(json.dumps(l) + '\n')
+                failed += 1
     else:
         l['logs'] = "No wikidata id or label"
+        skipped += 1
         fw.write(json.dumps(l) + '\n')
     print l['logs']
 
-print upload , ' of ' , total , ' uploaded. Hooray'
+print  'Uploaded:', upload, ' Failed:', failed , ' Skipped:', skipped, ' Total:', total
