@@ -8,7 +8,7 @@ columnName = sys.argv[2]
 wikiLanguageCode = sys.argv[3]
 
 
-site = pywikibot.Site(wikiLanguageCode, 'wikipedia')
+site = pywikibot.Site('wikidata', 'wikidata')
 repo = site.data_repository()
 
 fr = open(inputJSON,'r')
