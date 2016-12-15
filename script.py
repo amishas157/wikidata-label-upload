@@ -22,45 +22,54 @@ failed = 0
 for line in fr:
     total += 1
     l = json.loads(line)
-    language = columnName.split('.')[1]
-    if columnName in l and 'id' in l and l[columnName]!='':
-        try:
-            item = pywikibot.ItemPage(repo, l['id'])
-            item.get()
-            if wikiLanguageCode in item.labels:
-                label = item.labels[wikiLanguageCode]
-                if label != l[columnName]:
-                    aliases = item.aliases
-                    if wikiLanguageCode in aliases:
-                        if l[columnName] in aliases[wikiLanguageCode]:
-                            l['logs'] = "Skipped duplicate alias"
-                            skipped += 1
+    if columnName in l and l[columnName] !='':
+        if ('osm:wikidata' in l and 'osm:wikidata' != '') or ('wiki:wikidata' in l and 'wiki:wikidata' != ''): 
+            try:
+                if 'osm:wikidata' in l and l['osm:wikidata'] != '':
+                    wikidataId = l['osm:wikidata']
+                elif 'wiki:wikidata' in l and l['wiki:wikidata'] != '':
+                    wikidataId = l['wiki:wikidata']
+                item = pywikibot.ItemPage(repo, wikidataId)
+                item.get()
+
+                if wikiLanguageCode in item.labels:
+                    label = item.labels[wikiLanguageCode]
+                    if label != l[columnName]:
+                        aliases = item.aliases
+                        if wikiLanguageCode in aliases:
+                            if l[columnName] in aliases[wikiLanguageCode]:
+                                l['logs'] = "Skipped duplicate alias"
+                                skipped += 1
+                            else:
+                                aliases[wikiLanguageCode].append(l[columnName])
+                                upload += 1
+                                l['logs'] = "Appending an alias"
                         else:
-                            aliases[wikiLanguageCode].append(l[columnName])
+                            aliases.update({wikiLanguageCode :[l[columnName]]})
                             upload += 1
                             l['logs'] = "Appending an alias"
+                        item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + l[columnName])
+                        fw.write(json.dumps(l) + '\n')
                     else:
-                        aliases.update({wikiLanguageCode :[l[columnName]]})
-                        upload += 1
-                        l['logs'] = "Appending an alias"
-                    item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + l[columnName])
-                    fw.write(json.dumps(l) + '\n')
-                else:
-                    l['logs'] = "Skipped duplicate label"
-                    fw.write(json.dumps(l) + '\n')
+                        l['logs'] = "Skipped duplicate label"
+                        fw.write(json.dumps(l) + '\n')
 
-            else:
-                item.editLabels(labels={wikiLanguageCode: l[columnName]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[columnName])
-                upload += 1
-                l['logs'] = "Added new label"
-                fw.write(json.dumps(l) + '\n')
-        except Exception as e:
-                excepName = type(e).__name__
-                l['logs'] = "Exception" + excepName
-                fw.write(json.dumps(l) + '\n')
-                failed += 1
+                else:
+                    item.editLabels(labels={wikiLanguageCode: l[columnName]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[columnName])
+                    upload += 1
+                    l['logs'] = "Added new label"
+                    fw.write(json.dumps(l) + '\n')
+            except Exception as e:
+                    excepName = type(e).__name__
+                    l['logs'] = "Exception" + excepName
+                    fw.write(json.dumps(l) + '\n')
+                    failed += 1
+        else:
+            l['logs'] = "No wikidata "
+            skipped += 1
+            fw.write(json.dumps(l) + '\n')            
     else:
-        l['logs'] = "No wikidata id or label"
+        l['logs'] = "No label"
         skipped += 1
         fw.write(json.dumps(l) + '\n')
     print l['logs']
