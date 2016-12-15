@@ -4,7 +4,7 @@ import json
 csvfile = open('input.csv', 'r')
 jsonfile = open('input.json', 'w')
 
-fieldnames =("id","labels.uz.value","labels.bs.value","labels.is.value","labels.sq.value","labels.tg.value","labels.mn.value","labels.zh-tw.value","labels.hi.value","labels.te.value","labels.gu.value","labels.ka.value","labels.kk.value","labels.lv.value","labels.bn.value","labels.kn.value","labels.et.value","labels.sl.value","labels.az.value","labels.ta.value")
+fieldnames =("osm_id","osm_type","Type","name_en","name_zh_mbx","City","lon","lat","lat-long-dif","name","wikipedia","wikidata","osm:logs","osm:wikidata","osm:wikipedia","osm:name","osm:name:zh","osm:name:en","osm:geometry","wiki:logs","wiki:wikidata","wiki:label:zh","wiki:label:en","wiki:wikipedia:en","wiki:Distance")
 
 
 reader = csv.DictReader( csvfile, fieldnames)
