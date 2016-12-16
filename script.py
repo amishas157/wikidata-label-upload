@@ -23,7 +23,7 @@ for line in fr:
     total += 1
     l = json.loads(line)
     if columnName in l and l[columnName] !='':
-        if ('osm:wikidata' in l and 'osm:wikidata' != '') or ('wiki:wikidata' in l and 'wiki:wikidata' != ''): 
+        if ('osm:wikidata' in l and l['osm:wikidata'] != '') or ('wiki:wikidata' in l and l['wiki:wikidata'] != ''): 
             try:
                 if 'osm:wikidata' in l and l['osm:wikidata'] != '':
                     wikidataId = l['osm:wikidata']
@@ -52,6 +52,7 @@ for line in fr:
                         fw.write(json.dumps(l) + '\n')
                     else:
                         l['logs'] = "Skipped duplicate label"
+                        skipped += 1
                         fw.write(json.dumps(l) + '\n')
 
                 else:
