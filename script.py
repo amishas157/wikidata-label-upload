@@ -3,15 +3,32 @@ import pywikibot
 import json
 import sys
 
-inputJSON = sys.argv[1]
-columnName = sys.argv[2]
-wikiLanguageCode = sys.argv[3]
+inputCSV= sys.argv[1]
+wikidataColumn = sys.argv[2]
+translationColumn = sys.argv[3]
+wikiLanguageCode = sys.argv[4]
+
+
+fr = open(inputCSV, 'r')
+fw = open('input.json', 'w')
+
+line = fr.readline()
+fieldnames = line.split(',')
+fieldnames.pop() #remove the end \n element
+
+reader = csv.DictReader( fr, fieldnames)
+for row in reader:
+    json.dump(row, fw)
+    fw.write('\n')
+
+fr.close()
+fw.close()
 
 
 site = pywikibot.Site('wikidata', 'wikidata')
 repo = site.data_repository()
 
-fr = open(inputJSON,'r')
+fr = open('input.json','r')
 fw = open('logs.json','w')
 
 total = 0
@@ -22,33 +39,30 @@ failed = 0
 for line in fr:
     total += 1
     l = json.loads(line)
-    if columnName in l and l[columnName] !='':
-        if ('osm:wikidata' in l and l['osm:wikidata'] != '') or ('wiki:wikidata' in l and l['wiki:wikidata'] != ''): 
+    if translationColumn in l and l[translationColumn] !='':
+        if wikidataColumn in l and l[wikidataColumn] != '': 
             try:
-                if 'osm:wikidata' in l and l['osm:wikidata'] != '':
-                    wikidataId = l['osm:wikidata']
-                elif 'wiki:wikidata' in l and l['wiki:wikidata'] != '':
-                    wikidataId = l['wiki:wikidata']
+                wikidataId = l[wikidataColumn]
                 item = pywikibot.ItemPage(repo, wikidataId)
                 item.get()
 
                 if wikiLanguageCode in item.labels:
                     label = item.labels[wikiLanguageCode]
-                    if label != l[columnName]:
+                    if label != l[translationColumn]:
                         aliases = item.aliases
                         if wikiLanguageCode in aliases:
-                            if l[columnName] in aliases[wikiLanguageCode]:
+                            if l[translationColumn] in aliases[wikiLanguageCode]:
                                 l['logs'] = "Skipped duplicate alias"
                                 skipped += 1
                             else:
-                                aliases[wikiLanguageCode].append(l[columnName])
+                                aliases[wikiLanguageCode].append(l[translationColumn])
                                 upload += 1
                                 l['logs'] = "Appending an alias"
                         else:
-                            aliases.update({wikiLanguageCode :[l[columnName]]})
+                            aliases.update({wikiLanguageCode :[l[translationColumn]]})
                             upload += 1
                             l['logs'] = "Appending an alias"
-                        item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + l[columnName])
+                        item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + l[translationColumn])
                         fw.write(json.dumps(l) + '\n')
                     else:
                         l['logs'] = "Skipped duplicate label"
@@ -56,7 +70,7 @@ for line in fr:
                         fw.write(json.dumps(l) + '\n')
 
                 else:
-                    item.editLabels(labels={wikiLanguageCode: l[columnName]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[columnName])
+                    item.editLabels(labels={wikiLanguageCode: l[translationColumn]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[translationColumn])
                     upload += 1
                     l['logs'] = "Added new label"
                     fw.write(json.dumps(l) + '\n')
@@ -76,3 +90,6 @@ for line in fr:
     print l['logs']
 
 print  'Uploaded:', upload, ' Failed:', failed , ' Skipped:', skipped, ' Total:', total
+
+fr.close()
+fw.close()
