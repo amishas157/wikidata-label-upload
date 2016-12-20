@@ -5,7 +5,7 @@ import sys
 import csv
 
 if len(sys.argv) != 5:
-    print 'Usage: python scipt.py input.csv wikidataColumnName translationColumnName languageCode'
+    print 'Usage: python script.py input.csv wikidataColumnName translationColumnName languageCode'
     sys.exit()
 
 inputCSV= sys.argv[1]
