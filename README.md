@@ -1,6 +1,6 @@
 # wikidataLabelUpload
 
-Upload a CSV of translated labels into Wikidata.
+Upload language labels to wikidata
 
 Please read [Wikidata Bot policy](https://www.wikidata.org/wiki/Wikidata:Bots) before use.
 
@@ -18,21 +18,22 @@ Please read [Wikidata Bot policy](https://www.wikidata.org/wiki/Wikidata:Bots) b
 **Label Upload script**
 
 - Clone this repository and `cd` into it
-- Test uploading labels from `sample.json` to Wikidata sandbox `python script.py labels.lv.value lv`
+- Test uploading labels from `sample.csv` to Wikidata sandbox `python script.py sample.csv osm:wikidata name_zh_mbx zh-trans `
 - Check your contribution history on Wikidata to verify uploads
 
 ### Uploading translations
 
 **Preparing the translations file**
 
-The input to the script is a line delimited json file. Check `sample.json`. If you have a CSV, convert it using
-- `python csv_to_json.py`
+The input to the script is a CSV file. Check `sample.csv`.
 
-The input file must contain an `id` column with Wikidata Qids and one or more columns for the translations in each language.
-
+The input file must contain following:
+  - Column containing wikidata Qids (Null entries allowed)
+  - Column containing the translations for each Qid (Single translation for each Qid, Null entries allowed)
+  
 **Upload**
 
 Run:
-- `python script.py <input JSON file> <input JSON field> <2 letter wiki language code>`
+- `python script.py <input CSV filename> <Colmun name containing wikidata> <Column name containing translation > <wiki language code>`
 
-Example `python sample.py labels.en.value en`
+Example `python script.py input.csv osm:wikidata name_zh_mbx zh`
