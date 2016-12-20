@@ -2,12 +2,16 @@
 import pywikibot
 import json
 import sys
+import csv
+
+if len(sys.argv) != 5:
+    print 'Usage: python scipt.py input.csv wikidataColumnName translationColumnName languageCode'
+    sys.exit()
 
 inputCSV= sys.argv[1]
 wikidataColumn = sys.argv[2]
 translationColumn = sys.argv[3]
 wikiLanguageCode = sys.argv[4]
-
 
 fr = open(inputCSV, 'r')
 fw = open('input.json', 'w')
@@ -15,7 +19,6 @@ fw = open('input.json', 'w')
 line = fr.readline()
 fieldnames = line.split(',')
 fieldnames.pop() #remove the end \n element
-
 reader = csv.DictReader( fr, fieldnames)
 for row in reader:
     json.dump(row, fw)
