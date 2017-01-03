@@ -1,4 +1,4 @@
-# wikidataLabelUpload
+# wikidata-label-upload
 
 Upload language labels to wikidata
 
