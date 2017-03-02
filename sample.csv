@@ -1,10 +1,3 @@
-osm_id,osm_type,Type,name_en,name_zh_mbx,City,lon,lat,lat-long-dif,name,wikipedia,wikidata,osm:logs,osm:wikidata,osm:wikipedia,osm:name,osm:name:zh,osm:name:en,osm:geometry,wiki:logs,wiki:wikidata,wiki:label:zh,wiki:label:en,wiki:wikipedia:en,wiki:Distance
-2485807590,node,Tourism,Alun-Alun Puputan,普普坦广场,Bali,115.4034515,-8.5348465,,Puputan Monument,,,No wikidata/wikipedia,,,Puputan Monument,,,"{u'type': u'Point', u'coordinates': [115.4034515, -8.5348465]}",No wikidata / wikipedia,,,,,
-2483312803,node,Tourism,Bali Shell Museum,巴厘贝壳博物馆,Bali,115.1867151,-8.7142647,0.396155,Bali Shell Museum,,Q13406268,Success,Q13406268,,Bali Shell Museum,,,"{u'type': u'Point', u'coordinates': [115.1867151, -8.7142647]}",No chinese label,,,Bali Museum,Bali Museum,4.456432311464702
-1456270342,node,Tourism,Batuan Temple,巴图布兰寺庙,Bali,115.275975,-8.5816605,0.221864,Pura Desa Batuan,,,No wikidata/wikipedia,,,Pura Desa Batuan,,,"{u'type': u'Point', u'coordinates': [115.275975, -8.5816605]}",No wikidata / wikipedia,,,,,
-1308670079,node,Tourism,Batuan Village,巴图布兰文化村,Bali,115.2765404,-8.5835837,0.002489,Batuan,,Q13406268,Success,Q13406268,,Batuan,,,"{u'type': u'Point', u'coordinates': [115.2765404, -8.5835837]}",No chinese label,,,"Batuan, Bali","Batuan, Bali",0.11181469377747943
-1308721836,node,Tourism,Batubulan Village,巴土布兰村,Bali,115.2613406,-8.6201528,0.051769,Batubulan,,,No wikidata/wikipedia,,,Batubulan,,,"{u'type': u'Point', u'coordinates': [115.2613406, -8.6201528]}",No wikidata / wikipedia,,,,,
-4436155291,node,Tourism,Bluepoint,蓝点,Bali,115.0884813,-8.8152998,0.368006,Blue Point,,,No wikidata/wikipedia,,,Blue Point,,,"{u'type': u'Point', u'coordinates': [115.0884813, -8.8152998]}",No wikidata / wikipedia,,,,,
-428805386,node,Tourism,botanic garden,巴厘岛植物园,Bali,115.1546208,-8.2768689,5.619743,Bali Botanical Gardens,,Q13406268,Success,Q13406268,,Bali Botanical Gardens,,,"{u'type': u'Point', u'coordinates': [115.1546208, -8.2768689]}",No chinese label,,,Bali Botanic Garden,Bali Botanic Garden,0.050574251005792624
-4100128689,node,Tourism,Campuhan Ridge Walk,乌布坎普罕山脊徒步,Bali,115.2547195,-8.5033404,0.32657,Campuhan Ridge Walk,,,No wikidata/wikipedia,,,Campuhan Ridge Walk,,,"{u'type': u'Point', u'coordinates': [115.2547195, -8.5033404]}",No wikidata / wikipedia,,,,,
-2154599548,node,Tourism,Devil's Tear,恶魔的眼泪,Bali,115.4293397,-8.6907555,0.362035,Devil's Tear,,,No wikidata/wikipedia,,,Devil's Tear,,Devils Tear,"{u'type': u'Point', u'coordinates': [115.4293397, -8.6907555]}",No wikidata / wikipedia,,,,,
+wikidata,en,find.zh-hans,replace.zh-hans,find.zh-cn,replace.zh-cn
+Q4115189,Bát Tràng,鉢场社,钵场社,,
+Q18720640,Kudat,古達,古达,,
