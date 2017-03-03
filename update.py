@@ -4,14 +4,15 @@ import json
 import sys
 import csv
 
-if len(sys.argv) != 5:
-    print 'Usage: python update.py input.csv wikidataColumnName translationColumnName languageCode'
+if len(sys.argv) != 6:
+    print 'Usage: python update.py input.csv wikidataColumnName translationColumnName languageCode englishColumnName'
     sys.exit()
 
 inputCSV= sys.argv[1]
 wikidataColumn = sys.argv[2]
 translationColumn = sys.argv[3]
 wikiLanguageCode = sys.argv[4]
+englishColumnName = sys.argv[5]
 
 fr = open(inputCSV, 'r')
 fw = open('input.json', 'w')
@@ -49,22 +50,27 @@ for line in fr:
                 item = pywikibot.ItemPage(repo, wikidataId)
                 item.get()
 
-                if wikiLanguageCode in item.labels:
-                    label = item.labels[wikiLanguageCode]
-                    if label != l[translationColumn]:
+                if (l[englishColumnName] != '' and l[englishColumnName] == item.labels['en']):
+                    if wikiLanguageCode in item.labels:
+                        label = item.labels[wikiLanguageCode]
+                        if label != l[translationColumn]:
+                            item.editLabels(labels={wikiLanguageCode: l[translationColumn]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[translationColumn])
+                            upload += 1
+                            l['logs'] = "Replaced the label"
+                            fw.write(json.dumps(l) + '\n')
+                        else:
+                            l['logs'] = "Skipped duplicate label"
+                            skipped += 1
+                            fw.write(json.dumps(l) + '\n')
+
+                    else:
                         item.editLabels(labels={wikiLanguageCode: l[translationColumn]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[translationColumn])
                         upload += 1
-                        l['logs'] = "Replaced the label"
+                        l['logs'] = "Added new label"
                         fw.write(json.dumps(l) + '\n')
-                    else:
-                        l['logs'] = "Skipped duplicate label"
-                        skipped += 1
-                        fw.write(json.dumps(l) + '\n')
-
                 else:
-                    item.editLabels(labels={wikiLanguageCode: l[translationColumn]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[translationColumn])
-                    upload += 1
-                    l['logs'] = "Added new label"
+                    failed += 1
+                    l['logs'] = "English translation doesn't match"
                     fw.write(json.dumps(l) + '\n')
             except Exception as e:
                     excepName = type(e).__name__
