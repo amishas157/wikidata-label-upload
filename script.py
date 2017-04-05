@@ -14,13 +14,15 @@ translationColumn = sys.argv[3]
 wikiLanguageCode = sys.argv[4]
 englishColumnName = sys.argv[5]
 
+# Convert from CSV to a temporary JSON file
 fr = open(inputCSV, 'r')
-fw = open('input.json', 'w')
+fw = open('tmp.json', 'w')
 
 line = fr.readline()
 fieldnames = line.split(',')
 fieldnames.pop() #remove the end \n element
 reader = csv.DictReader( fr, fieldnames)
+
 for row in reader:
     json.dump(row, fw)
     fw.write('\n')
@@ -28,75 +30,105 @@ for row in reader:
 fr.close()
 fw.close()
 
-
+# Set Wiki project for upload
 site = pywikibot.Site('wikidata', 'wikidata')
 repo = site.data_repository()
 
-fr = open('input.json','r')
-fw = open('logs.json','w')
+fr = open('tmp.json','r')
+fw = open(inputCSV + '-logs.json','w')
 
 total = 0
 upload = 0
 skipped = 0
 failed = 0
 
+# Loop through the lines of the translation file
 for line in fr:
     total += 1
-    l = json.loads(line)
-    if translationColumn in l and l[translationColumn] !='':
-        if wikidataColumn in l and l[wikidataColumn] != '': 
+    line = json.loads(line)
+
+    # If the line has a translation and Wikidata id
+    if translationColumn in line and line[translationColumn] !='':
+        if wikidataColumn in line and line[wikidataColumn] != '':
+
+            # Query Wikidata item using pywikibot
             try:
-                wikidataId = l[wikidataColumn]
+                wikidataId = line[wikidataColumn]
                 item = pywikibot.ItemPage(repo, wikidataId)
                 item.get()
 
-                if (l[englishColumnName] != '' and l[englishColumnName] == item.labels['en']):
+                # Check if the Enlgish labels of the item match
+                if (line[englishColumnName] != '' and line[englishColumnName] == item.labels['en']):
+
+                    print "Processing: " + line[englishColumnName] + item.labels['en']
+
+                    # Check for an existing label translation
                     if wikiLanguageCode in item.labels:
+
+                        # Existing translation
                         label = item.labels[wikiLanguageCode]
-                        if label != l[translationColumn]:
+                        line['wikidataLabel:te'] = label
+
+                        # Check if the existing translation does not match the one to upload
+                        if label != line[translationColumn]:
+
+                            # Fetch the label aliases
                             aliases = item.aliases
+
+                            # Check for an existing alias translation
                             if wikiLanguageCode in aliases:
+
+                                line['wikidataAlias:te'] = aliases[wikiLanguageCode]
+
+                                # Check if translation matches existing alias
                                 if l[translationColumn] in aliases[wikiLanguageCode]:
-                                    l['logs'] = "Skipped duplicate alias"
+                                    line['logs'] = "Skipped duplicate alias"
                                     skipped += 1
                                 else:
-                                    aliases[wikiLanguageCode].append(l[translationColumn])
+                                    aliases[wikiLanguageCode].append(line[translationColumn])
                                     upload += 1
-                                    l['logs'] = "Appending an alias"
+                                    line['logs'] = "Appending an alias"
+
+                            # Add the translation as an alias
                             else:
-                                aliases.update({wikiLanguageCode :[l[translationColumn]]})
+                                aliases.update({wikiLanguageCode :[line[translationColumn]]})
                                 upload += 1
-                                l['logs'] = "Appending an alias"
-                            item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + l[translationColumn])
-                            fw.write(json.dumps(l) + '\n')
+                                line['logs'] = "Appending an alias"
+
+                            # Create edit summary
+                            item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + line[translationColumn])
+                            fw.write(json.dumps(line) + '\n')
+
+                        # If the label matches the translation
                         else:
-                            l['logs'] = "Skipped duplicate label"
+                            line['logs'] = "Skipped duplicate label"
                             skipped += 1
                             fw.write(json.dumps(l) + '\n')
 
+                    #
                     else:
-                        item.editLabels(labels={wikiLanguageCode: l[translationColumn]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[translationColumn])
+                        item.editLabels(labels={wikiLanguageCode: line[translationColumn]}, summary='Added [' + wikiLanguageCode +  '] label: ' + line[translationColumn])
                         upload += 1
-                        l['logs'] = "Added new label"
-                        fw.write(json.dumps(l) + '\n')
+                        line['logs'] = "Added new label"
+                        fw.write(json.dumps(line) + '\n')
                 else:
                     failed += 1
-                    l['logs'] = "English translation doesn't match"
-                    fw.write(json.dumps(l) + '\n')
+                    line['logs'] = "English translation doesn't match"
+                    fw.write(json.dumps(line) + '\n')
             except Exception as e:
                     excepName = type(e).__name__
-                    l['logs'] = "Exception" + excepName
-                    fw.write(json.dumps(l) + '\n')
+                    line['logs'] = "Exception" + excepName
+                    fw.write(json.dumps(line) + '\n')
                     failed += 1
         else:
-            l['logs'] = "No wikidata "
+            line['logs'] = "No wikidata "
             skipped += 1
-            fw.write(json.dumps(l) + '\n')            
+            fw.write(json.dumps(line) + '\n')
     else:
-        l['logs'] = "No label"
+        line['logs'] = "No label"
         skipped += 1
-        fw.write(json.dumps(l) + '\n')
-    print l['logs']
+        fw.write(json.dumps(line) + '\n')
+    print line['logs']
 
 print  'Uploaded:', upload, ' Failed:', failed , ' Skipped:', skipped, ' Total:', total
 
