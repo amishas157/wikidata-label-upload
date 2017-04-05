@@ -44,6 +44,8 @@ for line in fr:
     l = json.loads(line)
     if translationColumn in l and l[translationColumn] !='':
         if wikidataColumn in l and l[wikidataColumn] != '': 
+            l[translationColumn] = l[translationColumn].rstrip()
+            l[wikidataColumn] = l[wikidataColumn].rstrip()
             try:
                 wikidataId = l[wikidataColumn]
                 item = pywikibot.ItemPage(repo, wikidataId)
