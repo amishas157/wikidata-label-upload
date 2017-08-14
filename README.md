@@ -8,8 +8,9 @@ Please read [Wikidata Bot policy](https://www.wikidata.org/wiki/Wikidata:Bots) b
 
 **Pywikibot**
 
-[Install Pywikibot](https://www.mediawiki.org/wiki/Manual:Pywikibot/Installation) to interface with the Wiki API
+TO install and configure pywikibot, 
 - [Download source core_stable.zip](http://tools.wmflabs.org/pywikibot/core_stable.zip) and unpack, preferably to `/user/pywikibot`
+- [Install Pywikibot](https://www.mediawiki.org/wiki/Manual:Pywikibot/Installation) to interface with the Wiki API
 - `cd /user/pywikibot` and create pywikibot config file with `python pwb.py login`
 - Export an environment variable to link to the pywikibot folder `export PYWIKIBOT2_DIR=/user/pywikibot`
 - Upgrade to latest version `--upgrade git+https://github.com/wikimedia/pywikibot-core.git`
