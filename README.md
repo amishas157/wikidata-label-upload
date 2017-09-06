@@ -18,7 +18,7 @@ Please read [Wikidata Bot policy](https://www.wikidata.org/wiki/Wikidata:Bots) b
 **Label Upload script**
 
 - Clone this repository and `cd` into it
-- Test uploading labels from `sample.csv` to Wikidata sandbox `python script.py sample.csv osm:wikidata name_zh_mbx zh-trans `
+- Test uploading labels from `sample.csv` to Wikidata sandbox `python script.py sample.csv osm:wikidata name_zh_mbx zh-hans `
 - Check your contribution history on Wikidata to verify uploads
 
 ### Uploading translations
