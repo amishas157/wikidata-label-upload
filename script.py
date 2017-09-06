@@ -5,7 +5,7 @@ import sys
 import csv
 
 if len(sys.argv) != 5:
-    print 'Usage: python script.py input.csv wikidataColumnName translationColumnName languageCode'
+    print('Usage: python script.py input.csv wikidataColumnName translationColumnName languageCode')
     sys.exit()
 
 inputCSV= sys.argv[1]
@@ -92,9 +92,9 @@ for line in fr:
         l['logs'] = "No label"
         skipped += 1
         fw.write(json.dumps(l) + '\n')
-    print l['logs']
+    print(l['logs'])
 
-print  'Uploaded:', upload, ' Failed:', failed , ' Skipped:', skipped, ' Total:', total
+print('Uploaded:', upload, ' Failed:', failed , ' Skipped:', skipped, ' Total:', total)
 
 fr.close()
 fw.close()
