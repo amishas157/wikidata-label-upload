@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
-import pywikibot
+from wikidataintegrator import wdi_core
+from wikidataintegrator import wdi_login
 import json
 import sys
 import csv
+import getpass
 
 if len(sys.argv) != 5:
     print('Usage: python script.py input.csv wikidataColumnName translationColumnName languageCode')
     sys.exit()
+
+wikidata_username = raw_input("Please enter your username: ")
+wikidata_password = getpass.getpass()
+
+login_session = wdi_login.WDLogin(user=wikidata_username, pwd=wikidata_password)
 
 inputCSV= sys.argv[1]
 wikidataColumn = sys.argv[2]
@@ -27,10 +34,6 @@ for row in reader:
 fr.close()
 fw.close()
 
-
-site = pywikibot.Site('wikidata', 'wikidata')
-repo = site.data_repository()
-
 fr = open('input.json','r')
 fw = open('logs.json','w')
 
@@ -48,13 +51,13 @@ for line in fr:
             l[wikidataColumn] = l[wikidataColumn].rstrip()
             try:
                 wikidataId = l[wikidataColumn]
-                item = pywikibot.ItemPage(repo, wikidataId)
-                item.get()
+                item = wdi_core.WDItemEngine(wd_item_id=wikidataId)
+                item_json = item.get_wd_json_representation()
 
-                if wikiLanguageCode in item.labels:
-                    label = item.labels[wikiLanguageCode]
+                if wikiLanguageCode in item_json['labels']:
+                    label = item_json['labels'][wikiLanguageCode]
                     if label != l[translationColumn]:
-                        aliases = item.aliases
+                        aliases = item_json['aliases']
                         if wikiLanguageCode in aliases:
                             if l[translationColumn] in aliases[wikiLanguageCode]:
                                 l['logs'] = "Skipped duplicate alias"
@@ -67,7 +70,7 @@ for line in fr:
                             aliases.update({wikiLanguageCode :[l[translationColumn]]})
                             upload += 1
                             l['logs'] = "Appending an alias"
-                        item.editAliases(aliases=aliases, summary='Added [' + wikiLanguageCode +  '] alias: ' + l[translationColumn])
+                        item.set_aliases(aliases=aliases)
                         fw.write(json.dumps(l) + '\n')
                     else:
                         l['logs'] = "Skipped duplicate label"
@@ -75,7 +78,7 @@ for line in fr:
                         fw.write(json.dumps(l) + '\n')
 
                 else:
-                    item.editLabels(labels={wikiLanguageCode: l[translationColumn]}, summary='Added [' + wikiLanguageCode +  '] label: ' + l[translationColumn])
+                    item.set_label(labels={wikiLanguageCode: l[translationColumn]})
                     upload += 1
                     l['logs'] = "Added new label"
                     fw.write(json.dumps(l) + '\n')
