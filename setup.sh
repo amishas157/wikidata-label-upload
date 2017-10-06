@@ -11,8 +11,7 @@ pip install -r requirements.txt
 pip install --upgrade git+https://github.com/wikimedia/pywikibot-core.git
 sudo apt-get install mysql-server
 sudo apt-get install libmysqlclient-dev
-export PYWIKIBOT2_DIR=/user/pywikibot - fix
-touch pswd.txt
+# export PYWIKIBOT2_DIR=<`core` folder
 vim pswd.txt
 i
 ("wikidata","wikidata","planemad_mapbox","password")
