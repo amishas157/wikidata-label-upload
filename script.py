@@ -32,7 +32,7 @@ site = pywikibot.Site('wikidata', 'wikidata')
 repo = site.data_repository()
 
 fr = open('input.json','r')
-fw = open('logs.json','w')
+fw = open(wikiLanguageCode + '_logs.json','w')
 
 total = 0
 upload = 0
