@@ -3,6 +3,7 @@ import pywikibot
 import json
 import sys
 import csv
+import datetime
 
 if len(sys.argv) != 5:
     print('Usage: python script.py input.csv wikidataColumnName translationColumnName languageCode')
@@ -32,7 +33,8 @@ site = pywikibot.Site('wikidata', 'wikidata')
 repo = site.data_repository()
 
 fr = open('input.json','r')
-fw = open(wikiLanguageCode + '_logs.json','w')
+logname = wikiLanguageCode + '_logs- + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + .json'
+fw = open('./logs/' logname ,'w')
 
 total = 0
 upload = 0
@@ -95,6 +97,7 @@ for line in fr:
     print(l['logs'])
 
 print('Uploaded:', upload, ' Failed:', failed , ' Skipped:', skipped, ' Total:', total)
+print('Detailed logs can be found in the logs directory in' + logname)
 
 fr.close()
 fw.close()
